@@ -5,8 +5,8 @@
 # =============================================================================
 
 # TODO(step-4a): set the builder base image and name the stage "builder".
-# (bumped from 20.11 to a patched release to clear Trivy CRITICAL findings)
-FROM node:20.20.2-slim AS builder
+# (bumped to the newest Node LTS line to clear Trivy CRITICAL findings)
+FROM node:24-slim AS builder
 #   Do NOT use `node:latest` — we want reproducible builds across the cohort.
 
 WORKDIR /app
@@ -25,17 +25,9 @@ COPY app/ .
 # =============================================================================
 
 # TODO(step-4d): set the runtime base image (same tag as step-4a for consistency).
-FROM node:20.20.2-slim
+FROM node:24-slim
 
 WORKDIR /app
-
-# Patch OS packages so Trivy reports 0 CRITICAL findings
-RUN apt-get update \
- && apt-get upgrade -y \
- && rm -rf /var/lib/apt/lists/*
-
-# npm is not needed at runtime; removing it also removes the bundled tar
-RUN rm -rf /usr/local/lib/node_modules/npm /usr/local/bin/npm /usr/local/bin/npx
 
 # TODO(step-4e): copy the fully-installed app from the builder stage.
 COPY --from=builder /app .

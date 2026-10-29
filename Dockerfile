@@ -26,6 +26,11 @@ FROM node:20.11-slim
 
 WORKDIR /app
 
+# Patch OS packages so Trivy reports 0 CRITICAL findings
+RUN apt-get update \
+ && apt-get upgrade -y \
+ && rm -rf /var/lib/apt/lists/*
+
 # TODO(step-4e): copy the fully-installed app from the builder stage.
 COPY --from=builder /app .
 

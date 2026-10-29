@@ -34,6 +34,9 @@ RUN apt-get update \
  && apt-get upgrade -y \
  && rm -rf /var/lib/apt/lists/*
 
+# npm is not needed at runtime; removing it also removes the bundled tar
+RUN rm -rf /usr/local/lib/node_modules/npm /usr/local/bin/npm /usr/local/bin/npx
+
 # TODO(step-4e): copy the fully-installed app from the builder stage.
 COPY --from=builder /app .
 
